@@ -3,67 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>4-7-8 Atemtechnik</title>
+  <title>4-4-4 Atemübung</title>
   <style>
     body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        linear-gradient(135deg, #e0f7fa 0%, #c3e5e3 60%, #fadec3 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background: #f0f4f8;
-      font-family: sans-serif;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
     }
     h1 {
-      margin-bottom: 2rem;
-      font-size: 1.5rem;
-      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      color: #185a72;
+      letter-spacing: 0.07em;
+      text-shadow: 0 2px 12px #e7f8fc99;
+      font-weight: 800;
     }
-    #circle {
-      width: 150px;
-      height: 150px;
+    p {
+      font-size: 1.12rem;
+      margin-bottom: 2rem;
+      color: #29586d;
+      opacity: 0.81;
+      max-width: 355px;
+      text-align: center;
+    }
+    #breathVisual {
+      width: 180px;
+      height: 180px;
       border-radius: 50%;
-      background: #1e6449;
+      background: radial-gradient(circle at 40% 35%, #009e85 78%, #53a77f 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      color: white;
-      font-size: 1.2rem;
-      transition: all ease-in-out;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 44px 0 #009e8544;
+      transition: transform 1.7s cubic-bezier(.5,1.4,.43,1), background 2.4s;
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+    }
+    #info {
+      margin-top: 2.7rem;
+      font-size: 1rem;
+      color: #a1a9a5;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .glow {
+      box-shadow: 0 0 65px 0 #90e6cc99; 
+      transition: box-shadow 1.2s;
+    }
+    @media (max-width:600px) {
+      h1 {font-size: 1.2rem;}
+      #breathVisual {width: 130px; height: 130px; font-size: 1.1rem;}
     }
   </style>
 </head>
 <body>
-  <h1>4-7-8 Atemtechnik</h1>
-  <div id="circle">Start</div>
+  <h1>4-4-4 Atemübung</h1>
+  <p>Fokussiere dich auf deinen Atem.<br>
+     Atme in 4 Sekunden ein, halte 4 Sekunden, atme 4 Sekunden aus.<br>
+     Mit jedem Zyklus entspannst du bewusster.</p>
+  <div id="breathVisual" tabindex="0" aria-label="Atemübung starten">Start</div>
+  <div id="info">Klicke oder tippe auf den Kreis, um die Übung zu beginnen.</div>
 
   <script>
-    const circle = document.getElementById('circle');
-    
-    async function breathCycle() {
+    const breathVisual = document.getElementById('breathVisual');
+    const info = document.getElementById('info');
+    let running = false;
+
+    async function breath444() {
+      running = true;
+      info.textContent = "Atme mit dem Rhythmus des Kreises.";
+
       // Einatmen 4 Sekunden
-      circle.textContent = "Einatmen";
-      circle.style.transform = "scale(1.4)";
+      breathVisual.textContent = "Einatmen";
+      breathVisual.classList.add("glow");
+      breathVisual.style.transform = "scale(1.28)";
+      breathVisual.style.background = "radial-gradient(circle at 35% 35%, #27ce9c 90%, #56b78a 100%)";
       await new Promise(r => setTimeout(r, 4000));
 
-      // Halten 7 Sekunden
-      circle.textContent = "Halten";
-      circle.style.transform = "scale(1.2)";
-      await new Promise(r => setTimeout(r, 7000));
+      // Halten 4 Sekunden
+      breathVisual.textContent = "Halten";
+      breathVisual.classList.remove("glow");
+      breathVisual.style.transform = "scale(1.08)";
+      breathVisual.style.background = "radial-gradient(circle at 60% 60%, #009e85 85%, #92bba4 100%)";
+      await new Promise(r => setTimeout(r, 4000));
 
-      // Ausatmen 8 Sekunden
-      circle.textContent = "Ausatmen";
-      circle.style.transform = "scale(1)";
-      await new Promise(r => setTimeout(r, 8000));
+      // Ausatmen 4 Sekunden
+      breathVisual.textContent = "Ausatmen";
+      breathVisual.style.transform = "scale(0.84)";
+      breathVisual.style.background = "radial-gradient(circle at 60% 40%, #4a9ca8 80%, #c3e5e3 100%)";
+      await new Promise(r => setTimeout(r, 4000));
 
-      // Nächster Zyklus
-      breathCycle();
+      // Für den nächsten Zyklus zurücksetzen
+      breathVisual.textContent = "Pause";
+      breathVisual.style.transform = "scale(1)";
+      breathVisual.style.background = "radial-gradient(circle at 40% 35%, #009e85 78%, #53a77f 100%)";
+      await new Promise(r => setTimeout(r, 1200));
+
+      // Weiter — solange offen/aktiv
+      if (running) breath444();
     }
 
-    // Starte nach Klick auf den Kreis
-    circle.addEventListener('click', () => {
-      breathCycle();
-    }, { once: true });
+    function startBreathing() {
+      if (!running) {
+        breath444();
+      }
+    }
+
+    breathVisual.addEventListener('click', startBreathing);
+    breathVisual.addEventListener('keydown', e => {
+      if((e.key === "Enter" || e.key === " ") && !running) startBreathing();
+    });
+
+    // Reset when lost focus/clicked away
+    document.body.addEventListener('dblclick', () => {
+      running = false;
+      breathVisual.textContent = "Start";
+      breathVisual.style.transform = "scale(1)";
+      breathVisual.style.background = "radial-gradient(circle at 40% 35%, #009e85 78%, #53a77f 100%)";
+      info.textContent = "Klicke oder tippe auf den Kreis, um die Übung zu beginnen.";
+      breathVisual.classList.remove("glow");
+    });
   </script>
 </body>
 </html>
